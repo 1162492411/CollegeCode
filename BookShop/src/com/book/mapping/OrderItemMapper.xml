@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.book.dao.OrderItemMapper">
+  <resultMap id="BaseResultMap" type="com.book.pojo.OrderItem">
+    <id column="itemId" jdbcType="INTEGER" property="itemid" />
+    <result column="oid" jdbcType="INTEGER" property="oid" />
+    <result column="bid" jdbcType="INTEGER" property="bid" />
+    <result column="quantity" jdbcType="DOUBLE" property="quantity" />
+    <association property="book" resultMap="BookResultMap"/>
+  </resultMap>
+
+  <resultMap id="BookResultMap" type="com.book.pojo.Book">
+    <id column="bid" jdbcType="INTEGER" property="bid" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="isbn" jdbcType="VARCHAR" property="isbn" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    itemId, oid, bid, quantity
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+     o.itemId, o.oid, o.bid, o.quantity,b.title, b.price, b.author, b.isbn
+    from tb_orderitem o
+    left join tb_bookinfo b on o.bid = b.bid
+    where itemId = #{itemid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_orderitem
+    where itemId = #{itemid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.book.pojo.OrderItem">
+    insert into tb_orderitem (oid, bid,
+      quantity)
+    values ( #{oid,jdbcType=INTEGER}, #{bid,jdbcType=INTEGER},
+      #{quantity,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.book.pojo.OrderItem">
+    insert into tb_orderitem
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        oid,
+      </if>
+      <if test="bid != null">
+        bid,
+      </if>
+      <if test="quantity != null">
+        quantity,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oid != null">
+        #{oid,jdbcType=INTEGER},
+      </if>
+      <if test="bid != null">
+        #{bid,jdbcType=INTEGER},
+      </if>
+      <if test="quantity != null">
+        #{quantity,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.book.pojo.OrderItem">
+    update tb_orderitem
+    <set>
+      <if test="oid != null">
+        oid = #{oid,jdbcType=INTEGER},
+      </if>
+      <if test="bid != null">
+        bid = #{bid,jdbcType=INTEGER},
+      </if>
+      <if test="quantity != null">
+        quantity = #{quantity,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where itemId = #{itemid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.book.pojo.OrderItem">
+    update tb_orderitem
+    set oid = #{oid,jdbcType=INTEGER},
+      bid = #{bid,jdbcType=INTEGER},
+      quantity = #{quantity,jdbcType=DOUBLE}
+    where itemId = #{itemid,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.book.dao.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.book.pojo.Order">
+    <id column="oid" jdbcType="INTEGER" property="oid" />
+    <result column="userId" jdbcType="INTEGER" property="userid" />
+    <result column="zipCode" jdbcType="VARCHAR" property="zipcode" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="total" jdbcType="DOUBLE" property="total" />
+    <collection property="orders" ofType="com.book.pojo.OrderItem">
+      <id column="itemId" jdbcType="INTEGER" property="itemid" />
+      <result column="oid" jdbcType="INTEGER" property="oid" />
+      <result column="bid" jdbcType="INTEGER" property="bid" />
+      <result column="quantity" jdbcType="DOUBLE" property="quantity" />
+      <association property="book" javaType="com.book.pojo.Book">
+        <id column="bid" jdbcType="INTEGER" property="bid" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="price" jdbcType="DOUBLE" property="price" />
+        <result column="author" jdbcType="VARCHAR" property="author" />
+        <result column="isbn" jdbcType="VARCHAR" property="isbn" />
+      </association>
+    </collection>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    oid, userId, zipCode, address, total
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    o.oid, o.userId, o.zipCode, o.address, o.total,
+    oi.itemId, oi.bid, oi.quantity,
+    b.title, b.price, b.author, b.isbn
+    from tb_order o
+    left join tb_orderitem oi on o.oid = oi.oid
+    left join tb_bookinfo b on oi.bid = b.bid
+    where o.oid = #{oid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_order
+    where oid = #{oid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.book.pojo.Order">
+    insert into tb_order (userId, zipCode,
+      address, total)
+    values (#{userid,jdbcType=INTEGER}, #{zipcode,jdbcType=VARCHAR},
+      #{address,jdbcType=VARCHAR}, #{total,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.book.pojo.Order">
+    insert into tb_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userId,
+      </if>
+      <if test="zipcode != null">
+        zipCode,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="total != null">
+        total,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="zipcode != null">
+        #{zipcode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null">
+        #{total,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.book.pojo.Order">
+    update tb_order
+    <set>
+      <if test="userid != null">
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="zipcode != null">
+        zipCode = #{zipcode,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="total != null">
+        total = #{total,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.book.pojo.Order">
+    update tb_order
+    set userId = #{userid,jdbcType=INTEGER},
+      zipCode = #{zipcode,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      total = #{total,jdbcType=DOUBLE}
+    where oid = #{oid,jdbcType=INTEGER}
+  </update>
+
+  <select id="selectByUid" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    o.oid, o.userId, o.zipCode, o.address, o.total,
+    oi.itemId, oi.bid, oi.quantity,
+    b.title, b.price, b.author, b.isbn
+    from tb_order o
+    left join tb_orderitem oi on o.oid = oi.oid
+    left join tb_bookinfo b on oi.bid = b.bid
+    where userId = #{userid,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByCondition" parameterType="com.book.pojo.Order" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_order
+    <trim prefix="where"  prefixOverrides="and">
+      <if test="oid != null">
+        oid = #{oid,jdbcType=INTEGER}
+      </if>
+      <if test="userid != null">
+        and userid = #{userid,jdbcType=INTEGER}
+      </if>
+      <if test="zipcode != null">
+        and zipcode = #{zipcode,jdbcType=VARCHAR}
+      </if>
+      <if test="address != null">
+        and address = #{address,jdbcType=VARCHAR}
+      </if>
+      <if test="total != null">
+        and total =  #{total,jdbcType=DOUBLE}
+      </if>
+    </trim>
+  </select>
+
+</mapper>
