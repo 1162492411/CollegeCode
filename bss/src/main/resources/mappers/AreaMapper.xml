@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.AreaMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhd.pojo.Area">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="north_point" property="northPoint" />
+        <result column="south_point" property="southPoint" />
+        <result column="west_point" property="westPoint" />
+        <result column="east_point" property="eastPoint" />
+        <result column="type" property="type" />
+        <result column="city_id" property="cityId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, north_point AS northPoint, south_point AS southPoint, west_point AS westPoint, east_point AS eastPoint, type, city_id as cityId
+    </sql>
+
+    <!--<insert id="insertCollection" parameterType="java.util.List">-->
+        <!--insert into area (name, north_point, south_point, west_point, east_point) VALUES-->
+        <!--<foreach item="item" collection="areas" separator=",">-->
+            <!--(#{item.name}, #{item.northPoint}, #{item.southPoint}, #{item.westPoint}, #{item.eastPoint})-->
+        <!--</foreach>-->
+    <!--</insert>-->
+
+    <select id="selectAllByCityIds" resultType="java.lang.Integer">
+        select id from area where city_id in
+        <foreach collection="cityIds" item="city" open="(" separator="," close=")">
+            #{city}
+        </foreach>
+    </select>
+
+
+
+</mapper>

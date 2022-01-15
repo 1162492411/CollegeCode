@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>共享单车管理平台--区域管理</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport" />
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/font-awesome.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/ionicons.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/AdminLTE.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/skins/skin-blue.min.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/bss.css}" />
+    <link rel="stylesheet" th:href="@{/static/css/pagination.css}" />
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <header th:replace="header :: commonHeader"></header>
+
+    <aside th:replace="aside :: commonAside"></aside>
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="form-inline">
+                <span>区域列表</span>
+                <input type="text" placeholder="名称/类型关键字" id="search-area-form-input" class="form-control" />
+                <button class="Button Button--blue" onclick="searchArea()">查询</button>
+            </div>
+
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-bicycle"></i> 车辆模块</a></li>
+                <li class="active">区域管理</li>
+            </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content container-fluid">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box">
+                        <div class="box-body">
+                            <table id="areaTable" class="table table-bordered table-hover">
+                            </table>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- 分页按钮 -->
+            <nav><ul class="pagination" id="areasPagination"></ul></nav>
+        </section>
+        <!-- /.content -->
+
+    </div>
+    <footer th:replace="footer :: commonFooter"></footer>
+
+    <aside th:replace="sidebar :: commonSidebar"></aside>
+
+    <!-- Add the sidebar's background. This div must be placed
+immediately after the control sidebar -->
+    <div class="control-sidebar-bg"></div>
+
+    <!-- 修改区域 -->
+    <div class="modal" id="update-area-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">修改区域</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="update-area-form">
+                        <div class="box-body">
+                            <!-- 编号 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-id" class="col-sm-3 control-label">编号</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="update-area-modal-id" placeholder="编号" disabled="disabled" />
+                                </div>
+                            </div>
+                            <!-- 区域名 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-name" class="col-sm-3 control-label">区域名</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="update-area-modal-name" name="updateName" placeholder="区域名" />
+                                </div>
+                            </div>
+                            <!-- 区域类型 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-type" class="col-sm-3 control-label">区域类型</label>
+                                <div class="col-sm-8">
+                                    <select class="col-sm-10 form-control" id="update-area-modal-type"></select>
+                                </div>
+                            </div>
+                            <!-- 区域最北部 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-northPoint" class="col-sm-3 control-label">区域最北部</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="update-area-modal-northPoint" name="updateNorthPoint" placeholder="区域最北部" />
+                                </div>
+                            </div>
+                            <!-- 区域最南部 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-southPoint" class="col-sm-3 control-label">区域最南部</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="update-area-modal-southPoint" name="updateSouthPoint" placeholder="区域最南部" />
+                                </div>
+                            </div>
+                            <!-- 区域最西部 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-westPoint" class="col-sm-3 control-label">区域最西部</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="update-area-modal-westPoint" name="updateWestPoint" placeholder="区域最西部" />
+                                </div>
+                            </div>
+                            <!-- 区域最东部 -->
+                            <div class="form-group">
+                                <label for="update-area-modal-eastPoint" class="col-sm-3 control-label">区域最东部</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="update-area-modal-eastPoint" name="updateEastPoint" placeholder="区域最东部" />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
+                            <button type="button" class="btn btn-primary" onclick="doUpdateArea()">修改</button>
+                        </div>
+                        <!-- /.box-body -->
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- 修改区域结束 -->
+
+    <!-- 添加区域 -->
+    <div class="modal" id="add-area-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">添加区域</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" id="add-area-form" >
+                        <div class="box-body">
+                            <!-- 编号 -->
+                            <input type="hidden" id="add-area-modal-id" />
+                            <!-- 区域名 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-name" class="col-sm-3 control-label">区域名</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="add-area-modal-name" name="addName" placeholder="区域名" />
+                                </div>
+                            </div>
+                            <!-- 区域类型 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-type" class="col-sm-3 control-label">区域类型</label>
+                                <div class="col-sm-8">
+                                    <select class="col-sm-10 form-control" id="add-area-modal-type"></select>
+                                </div>
+                            </div>
+                            <!-- 区域最北部 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-northPoint" class="col-sm-3 control-label">区域最北部</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="add-area-modal-northPoint" name="addNorthPoint" placeholder="区域最北部" />
+                                </div>
+                            </div>
+                            <!-- 区域最南部 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-southPoint" class="col-sm-3 control-label">区域最南部</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="add-area-modal-southPoint" name="addSouthPoint" placeholder="区域最南部" />
+                                </div>
+                            </div>
+                            <!-- 区域最西部 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-westPoint" class="col-sm-3 control-label">区域最西部</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="add-area-modal-westPoint" name="addWestPoint" placeholder="区域最西部" />
+                                </div>
+                            </div>
+                            <!-- 区域最东部 -->
+                            <div class="form-group">
+                                <label for="add-area-modal-eastPoint" class="col-sm-3 control-label">区域最东部</label>
+                                <div class="col-sm-8">
+                                    <input type="text" class="col-sm-10 form-control" id="add-area-modal-eastPoint" name="addEastPoint" placeholder="区域最东部" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">放弃</button>
+                            <button type="button" class="btn btn-primary" onclick="addArea()">添加</button>
+                        </div>
+                        <!-- /.box-body -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 添加区域结束 -->
+
+</div>
+<script th:src="@{/static/js/jquery.min.js}"></script>
+<script th:src="@{/static/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/js/adminlte.min.js}"></script>
+<script th:src="@{/static/js/jquery.validate.min.js}"></script>
+<script th:src="@{/static/js/messages_zh.min.js}"></script>
+<script th:src="@{/static/js/data.js}"></script>
+<script th:src="@{/static/js/bss.js}"></script>
+<script type="text/javascript">
+    $.validator.setDefaults({
+        errorElement: "em",
+        success: function (label) {
+            label.text("ok!").addClass("success");
+        }
+    });
+    $(document).ready(function () {
+        loadAreas(1);
+        initSelection("update-area-modal-type",allAreaType);
+        initSelection("add-area-modal-type",allAreaType);
+        $("#add-area-form").validate({
+            rules :{
+                addName: "required",
+                addNorthPoint: {
+                    required : true,
+                    number : true,
+                    range : [-180 , 180]
+                },
+                addSouthPoint: {
+                    required : true,
+                    number : true,
+                    range : [-180, 180]
+                },
+                addWestPoint: {
+                    required : true,
+                    number : true,
+                    range : [-180, 180]
+                },
+                addEastPoint: {
+                    required : true,
+                    number : true,
+                    range : [-180, 180]
+                }
+            }
+        });
+        $("#update-area-form").validate({
+            rules :{
+                updateName: "required",
+                updateNorthPoint: {
+                    required : true,
+                    number : true,
+                    range : [-180, 180]
+                },
+                updateSouthPoint: {
+                    required : true,
+                    number : true,
+                    range : [-180 ,180]
+                },
+                updateWestPoint: {
+                    required : true,
+                    number : true,
+                    range : [-180, 180]
+                },
+                updateEastPoint: {
+                    required : true,
+                    number : true,
+                    range : [-180, 180]
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>

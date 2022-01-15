@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zhd.mapper.RechargeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.zhd.pojo.Recharge">
+        <id column="id" property="id" />
+        <result column="uuser_id" property="userId" />
+        <result column="type" property="type" />
+        <result column="recharge_time" property="rechargeTime" />
+        <result column="amount" property="amount" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, u_id AS uId, type, recharge_time AS rechargeTime, amount
+    </sql>
+
+</mapper>
